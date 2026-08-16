@@ -40,7 +40,7 @@ def staging_table():
 
         ids_in_json = {row['video_id'] for row in YT_data}
 
-        ids_to_delete = set(table_ids) - ids_in_jsons
+        ids_to_delete = set(table_ids) - ids_in_json
 
         if ids_to_delete:
             delete_rows(cur, conn, schema, ids_to_delete)

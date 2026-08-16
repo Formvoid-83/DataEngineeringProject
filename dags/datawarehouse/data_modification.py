@@ -1,7 +1,7 @@
 import logging
 
 logger = logging.getLogger(__name__)
-table = "ty_api"
+table = 'yt_api'
 
 def insert_rows(cur, conn, schema,row):
 
@@ -13,7 +13,7 @@ def insert_rows(cur, conn, schema,row):
 
             cur.execute(
                 f"""INSERT INTO {schema}.{table}("Video_ID", "Video_Title", "Upload_Date", "Duration", "Video_Views", "Likes_Count", "Comments_Count")
-                VALUES (%(video_id)s), %(title)s, %(publishedAt)s, %(duration)s, %(viewCount)s, %(likeCount)s, %(commentCount)s);
+                VALUES (%(video_id)s, %(title)s, %(publishedAt)s, %(duration)s, %(viewCount)s, %(likeCount)s, %(commentCount)s);
                 """, row
             )
         else:
@@ -22,13 +22,13 @@ def insert_rows(cur, conn, schema,row):
 
             cur.execute(
                 f"""INSERT INTO {schema}.{table}("Video_ID", "Video_Title", "Upload_Date", "Duration", "Video_Type", "Video_Views", "Likes_Count", "Comments_Count")
-                VALUES (%(Video_id)s), %(Title)s, %(Upload_Date)s, %(Duration)s, %(Video_Types)s, %(ViewCount)s, %(Likes_Count)s, %(Comments_Count)s)
+                VALUES (%(Video_ID)s, %(Video_Title)s, %(Upload_Date)s, %(Duration)s, %(Video_Type)s, %(Video_Views)s, %(Likes_Count)s, %(Comments_Count)s)
                 """, row
                         )
 
-            conn.commit()
+        conn.commit()
 
-            logger.info(f"Inserted row with Video ID: {row[video_id]}")
+        logger.info(f"Inserted row with Video ID: {row[video_id]}")
 
     except Exception as e:
         logger.error(f"Error inserting row with Video ID: {row[video_id]} - {e}")
@@ -60,7 +60,7 @@ def update_rows(cur, conn, schema, row):
             SET "Video_Title" = %({video_title})s,
                 "Video_Views" = %({video_views})s,
                 "Likes_Count" = %({likes_count})s,
-                "Comments_Count = %({comments_count})s
+                "Comments_Count" = %({comments_count})s
             WHERE "Video_ID" = %({video_id})s AND "Upload_Date" = %({upload_date})s;
             """, row 
         )
