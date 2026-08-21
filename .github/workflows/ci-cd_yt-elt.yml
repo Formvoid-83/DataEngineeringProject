@@ -125,7 +125,12 @@ jobs:
       - name: Run Unit and Integration Tests
         if: steps.changed-files-tests.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
         run: docker exec -t airflow-worker sh -c "pytest tests/ -v"
-
+        #register DAGS
+      - name: Register DAGs in metastore
+        if: steps.changed-files-tests.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          docker exec airflow-worker airflow dags reserialize
+          docker exec airflow-worker airflow dags list
       - name: Run End-to-End DAG Tests
         if: steps.changed-files-tests.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
         run: |
