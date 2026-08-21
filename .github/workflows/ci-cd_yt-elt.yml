@@ -32,6 +32,12 @@ jobs:
             dockerfile
             requirements.txt
 
+      #DEBUG
+      - name: Debug changed files
+        run: |
+          echo "any_changed: ${{ steps.changed-files-build.outputs.any_changed }}"
+          echo "all_changed: ${{ steps.changed-files-build.outputs.all_changed_files }}"
+
       - name: Set up Docker Buildx
         if: steps.changed-files-build.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
         uses: docker/setup-buildx-action@v3
