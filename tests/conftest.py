@@ -9,7 +9,7 @@ SecretCache.reset()
 @pytest.fixture
 def api_key():
     with mock.patch.dict("os.environ", AIRFLOW_VAR_API_KEY="MOCK_KEY1234"):
-        print("ENV:", os.environ["AIRFLOW_VAR__API_KEY"])
+        print("ENV:", os.environ["AIRFLOW_VAR_API_KEY"])
         yield Variable.get("API_KEY")
 
 
