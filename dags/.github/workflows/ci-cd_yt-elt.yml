@@ -7,11 +7,11 @@ on:
       - 'feature/*'
   pull_request:
     branches:
-      - main          # FIX: was "-main" (missing space => not a list item)
+      - main          
   workflow_dispatch:
 
 permissions:
-  contents: read      # least privilege; limits damage if an action is compromised
+  contents: read     
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -26,7 +26,6 @@ jobs:
 
       - name: Get changed files
         id: changed-files-build
-        # SECURITY: replace @v45 with a full commit SHA. See notes below.
         uses: tj-actions/changed-files@v45
         with:
           files: |
@@ -48,8 +47,7 @@ jobs:
 
       - name: Build and push Docker image
         if: steps.changed-files-build.outputs.any_changed == 'true'
-        # FIX: needs the "|" block scalar, otherwise YAML folds the newlines
-        # into spaces and the backslashes end up literal mid-command
+
         run: |
           docker buildx build --push \
             --tag ${{ vars.DOCKERHUB_NAMESPACE }}/${{ vars.DOCKERHUB_REPOSITORY }}:latest \
@@ -60,7 +58,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-push-image
     env:
-      # FIX: every "secret." below was invalid -> must be "secrets."
       AIRFLOW_WWW_USER_PASSWORD: ${{ secrets.AIRFLOW_WWW_USER_PASSWORD }}
       AIRFLOW_WWW_USER_USERNAME: ${{ secrets.AIRFLOW_WWW_USER_USERNAME }}
       API_KEY: ${{ secrets.API_KEY }}
@@ -136,6 +133,5 @@ jobs:
         run: docker compose logs --tail=200
 
       - name: Tear down Docker Compose
-        # always() so containers are cleaned up even when tests fail
         if: always() && steps.changed-files-tests.outputs.any_changed == 'true'
         run: docker compose down -v
